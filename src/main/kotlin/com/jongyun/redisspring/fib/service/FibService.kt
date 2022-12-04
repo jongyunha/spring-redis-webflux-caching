@@ -20,7 +20,7 @@ class FibService {
         println("clearing hash key")
     }
 
-    @Scheduled(fixedRate = 10_000)
+//    @Scheduled(fixedRate = 10_000)
     @CacheEvict("math:fib", allEntries = true)
     fun clearCache() {
         println("clearing all fib keys")
