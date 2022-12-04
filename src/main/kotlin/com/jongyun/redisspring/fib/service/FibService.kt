@@ -1,15 +1,15 @@
 package com.jongyun.redisspring.fib.service
 
-import java.util.InputMismatchException
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
 class FibService {
 
-    @Cacheable("math:fib")
-    fun getFib(index: Int): Int {
-        println("calcurating fib for $index")
+    // have a strategy for cache evict
+    @Cacheable("math:fib", key = "#index")
+    fun getFib(index: Int, name: String): Int {
+        println("calcurating fib for $index name: $name")
         return this.fib(index)
     }
 

@@ -11,8 +11,10 @@ class FibController(
     private val fibService: FibService
 ) {
 
-    @GetMapping("/fib/{index}")
-    fun getFib(@PathVariable index: Int): Mono<Int> {
-        return Mono.fromSupplier { fibService.getFib(index) }
+    @GetMapping("/fib/{index}/{name}")
+    fun getFib(
+        @PathVariable index: Int, @PathVariable name: String
+    ): Mono<Int> {
+        return Mono.fromSupplier { fibService.getFib(index, name) }
     }
 }
