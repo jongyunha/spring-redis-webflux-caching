@@ -2,7 +2,8 @@ package com.jongyun.redisspring.city.service
 
 import com.jongyun.redisspring.city.client.CityClient
 import com.jongyun.redisspring.city.dto.City
-import org.redisson.api.RMapReactive
+import java.util.concurrent.TimeUnit
+import org.redisson.api.RMapCacheReactive
 import org.redisson.api.RedissonReactiveClient
 import org.redisson.codec.TypedJsonJacksonCodec
 import org.springframework.stereotype.Service
@@ -15,8 +16,8 @@ class CityService(
     private val cityClient: CityClient
 ) {
 
-    var cityMap: RMapReactive<String, City> =
-        client.getMap("city", TypedJsonJacksonCodec(String::class.java, City::class.java))
+    var cityMap: RMapCacheReactive<String, City> =
+        client.getMapCache("city", TypedJsonJacksonCodec(String::class.java, City::class.java))
 
     // get from cache
     // if empty - get from db / source
@@ -24,7 +25,7 @@ class CityService(
         return this.cityMap.get(zipCode)
             .switchIfEmpty {
                 cityClient.getCity(zipCode)
-                    .flatMap { this.cityMap.fastPut(zipCode, it).thenReturn(it) }
+                    .flatMap { this.cityMap.fastPut(zipCode, it, 10, TimeUnit.SECONDS).thenReturn(it) }
             }
     }
 }
